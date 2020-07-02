@@ -1,0 +1,34 @@
+$headerHeight: auto;
+$headerBg: linear-gradient(to right, #fc9f00 0%, #ec0831 100%);
+
+$logoFontColor: #fff;
+$logoMargin: 15px;
+$logoFontSize: 30px;
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: $headerHeight;
+  background: $headerBg;
+
+  &__logo {
+    color: $logoFontColor;
+    margin: $logoMargin;
+    font-size: $logoFontSize;
+    font-weight: 700;
+    animation: logoAppear 500ms forwards ease-in-out;
+  }
+}
+
+@keyframes logoAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
