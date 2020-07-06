@@ -1,4 +1,5 @@
 import { injectable, inject } from "inversify";
+
 import { RequestFactory } from "./RequestFactory";
 import { IReposElement } from "./interfaces/IReposElement";
 import { TablesFactory } from "./TableFactory";
@@ -6,9 +7,10 @@ import { IRepo } from "./interfaces/IRepo";
 
 @injectable()
 export class ReposService {
-  private readonly REPOS_WRAPPER_CLASS_NAME = "repos__wrapper";
+  private readonly REPOS_WRAPPER_CLASS_NAME = "repo_table__wrapper";
   private readonly REPO_TAG_REGEX = /\brepo\b/;
   private readonly DIV_TAG_NAME = "div";
+  private readonly USERNAME_CLASS_NAME = "repo__username";
 
   constructor(
     @inject(RequestFactory) private requestFactory: RequestFactory,
@@ -16,7 +18,7 @@ export class ReposService {
   ) {}
 
   private getGHReposURL = (user: string) =>
-    `https://api.github.com/users/${user}/repos`;
+    `https://api.github.com/users/${user}/repos?sort=updated`;
 
   private get repoTagNodes() {
     return document.getElementsByTagName("repo") as HTMLCollectionOf<
@@ -84,10 +86,19 @@ export class ReposService {
     element.className = this.REPOS_WRAPPER_CLASS_NAME;
   };
 
+  private addUserName = (element: IReposElement): void => {
+    const h2Element = document.createElement("h2");
+
+    h2Element.className = this.USERNAME_CLASS_NAME;
+    h2Element.innerHTML = `${element.element.dataset.user} repozitories.`;
+    element.element.appendChild(h2Element);
+  };
+
   public renderTables = () => {
     this.nodesWithRepos.forEach(async (element: Promise<IReposElement>) => {
       const repoElement = await element;
 
+      this.addUserName(repoElement);
       repoElement.element.appendChild(
         this.tableFactory.createTable(repoElement)
       );

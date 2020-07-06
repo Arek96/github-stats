@@ -1,6 +1,6 @@
 import { IRepo } from "./IRepo";
 
 export interface IReposElement {
-  element: Element;
+  element: HTMLElement;
   repos: IRepo[];
 }

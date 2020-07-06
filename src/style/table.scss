@@ -1,0 +1,99 @@
+$primaryRed: #ec0831;
+$primarYellow: #fc9f00;
+$primaryDark: #242424;
+$secondaryDark: #1e1e1e;
+$primaryLight: #e5e5e5;
+
+$borderRadius: 5px;
+$cellPadding: 10px;
+
+.repo__username {
+  font-size: 30px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.repo_table {
+  width: 100%;
+  border-spacing: 0;
+  position: relative;
+
+  &::after {
+    height: 7px;
+    background: linear-gradient(270deg, $primaryRed 0%, $primarYellow 100%);
+    border-radius: 0 0 7px 7px;
+    content: "";
+    position: absolute;
+    right: 7px;
+    bottom: -7px;
+    left: 7px;
+  }
+
+  &__wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 15px;
+  }
+
+  &__row {
+    &:first-of-type {
+      .repo_table__cell {
+        &:first-of-type {
+          border-radius: $borderRadius 0px 0px 0px;
+        }
+
+        &:last-of-type {
+          border-radius: 0px $borderRadius 0px 0px;
+        }
+      }
+    }
+
+    &:last-of-type {
+      .repo_table__cell {
+        &:last-of-type {
+          border-radius: 0px 0px $borderRadius 0px;
+        }
+
+        &:first-of-type {
+          border-radius: 0px 0px 0px $borderRadius;
+        }
+      }
+    }
+
+    &:not(:last-of-type) {
+      & .repo_table__cell {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__cell {
+    max-width: 100px;
+    padding: $cellPadding;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: 1px solid $primaryLight;
+    color: $primaryDark;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: capitalize;
+
+    &:not(:first-of-type) {
+      border-left: none;
+    }
+
+    &__link a {
+      color: $primarYellow;
+      text-decoration: none;
+
+      &:hover {
+        color: $primaryRed;
+      }
+
+      &:visited {
+        color: $secondaryDark;
+      }
+    }
+  }
+}
