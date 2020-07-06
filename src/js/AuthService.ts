@@ -1,11 +1,16 @@
 import { Base64 } from "js-base64";
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { ErrorService } from "./ErrorService";
 
 @injectable()
 export class AuthService {
   public GITHUB_USER_URL: string = "https://api.github.com/user";
+  private NOT_AUTH_USER_MESSAGE =
+    "You are not authorized to github. Check the credentials in .env file. But you can still send 60 request to GH API";
 
   public isAuthorized: boolean | undefined = undefined;
+
+  constructor(@inject(ErrorService) private errorService: ErrorService) {}
 
   public initAuth = (): void => {
     this.checkIfAuthorized();
@@ -24,16 +29,19 @@ export class AuthService {
   private fetchUser = async () => {
     const user = await fetch(this.GITHUB_USER_URL, {
       method: "GET",
-      headers: this.authHeaders
+      headers: this.authHeaders,
     });
     return user;
   };
 
   private checkIfAuthorized = async () => {
     const user = await this.fetchUser();
-    user.status === 200
-      ? (this.isAuthorized = true)
-      : (this.isAuthorized = false);
+    if (user.status === 200) {
+      this.isAuthorized = true;
+    } else {
+      this.isAuthorized = false;
+      this.errorService.handle(this.NOT_AUTH_USER_MESSAGE);
+    }
   };
 
   private get encodedAuthString(): string {

@@ -4,6 +4,8 @@ import { RequestFactory } from "./RequestFactory";
 import { IReposElement } from "./interfaces/IReposElement";
 import { TablesFactory } from "./TableFactory";
 import { IRepo } from "./interfaces/IRepo";
+import { ErrorService } from "./ErrorService";
+import { IErrorResponse } from "./interfaces/IErrorResponse";
 
 @injectable()
 export class ReposService {
@@ -11,10 +13,13 @@ export class ReposService {
   private readonly REPO_TAG_REGEX = /\brepo\b/;
   private readonly DIV_TAG_NAME = "div";
   private readonly USERNAME_CLASS_NAME = "repo__username";
+  private readonly CAN_NOT_FETCH_DATA =
+    "Some error occured while fetching the data from server.";
 
   constructor(
     @inject(RequestFactory) private requestFactory: RequestFactory,
-    @inject(TablesFactory) private tableFactory: TablesFactory
+    @inject(TablesFactory) private tableFactory: TablesFactory,
+    @inject(ErrorService) private errorService: ErrorService
   ) {}
 
   private getGHReposURL = (user: string) =>
@@ -33,8 +38,16 @@ export class ReposService {
         method: "GET",
       }
     );
-
-    return userRepos.json();
+    const parsedUserRepos: IErrorResponse | IRepo[] = await userRepos.json();
+    if (userRepos.status === 200) {
+      return parsedUserRepos as IRepo[];
+    } else {
+      this.errorService.handle(
+        `${this.CAN_NOT_FETCH_DATA} Server message:${
+          (parsedUserRepos as IErrorResponse).message
+        }`
+      );
+    }
   };
 
   private getTimeSince1970 = (date: string): number => {
