@@ -10,7 +10,7 @@ export class InitService {
     @inject(ReposService) private reposService: ReposService
   ) {}
 
-  init = () => {
+  public init = (): void => {
     this.authService.initAuth();
     this.reposService.renderTables();
   };

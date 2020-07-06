@@ -7,7 +7,7 @@ export class TablesFactory {
   private readonly TABLE_CLASS_NAME: string = "repo_table";
   private readonly TABLE_CELL_CLASS_NAME: string = `${this.TABLE_CLASS_NAME}__cell`;
   private readonly TABLE_CELL_CLASS_ROW: string = `${this.TABLE_CLASS_NAME}__row`;
-  private readonly NO_DESCRIPTION_STRING = "No description";
+  private readonly NO_DESCRIPTION_STRING: string = "No description";
 
   public createTable = (element: IReposElement): HTMLElement => {
     const table = this.table;
@@ -24,7 +24,7 @@ export class TablesFactory {
     return table;
   }
 
-  private get tableHeader() {
+  private get tableHeader(): string {
     return `
         <tr class="${this.TABLE_CELL_CLASS_ROW}" >
             <th class="table__cell_name ${this.TABLE_CELL_CLASS_NAME}" >Name</th>
@@ -35,7 +35,7 @@ export class TablesFactory {
         `;
   }
 
-  private getRepoRow = (repo: IRepo) => {
+  private getRepoRow = (repo: IRepo): string => {
     return `
         <tr class="${this.TABLE_CELL_CLASS_ROW}" >
             <td class="${this.TABLE_CELL_CLASS_NAME}" >
@@ -68,7 +68,7 @@ export class TablesFactory {
         `;
   };
 
-  private formatDescription = (desc: string | null) =>
+  private formatDescription = (desc: string | null): string =>
     typeof desc === "string" ? desc : this.NO_DESCRIPTION_STRING;
 
   private formatDate = (date: string): string => {
@@ -76,7 +76,7 @@ export class TablesFactory {
     return dateObject.toLocaleDateString();
   };
 
-  private getTableRows = (repos: IRepo[]) => {
+  private getTableRows = (repos: IRepo[]): string => {
     return repos.map((repo) => this.getRepoRow(repo)).join("");
   };
 }

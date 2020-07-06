@@ -5,7 +5,10 @@ import { AuthService } from "./AuthService";
 export class RequestFactory {
   constructor(@inject(AuthService) private authService: AuthService) {}
 
-  public fetch = async (url: string, params?: RequestInit) => {
+  public fetch = async (
+    url: string,
+    params?: RequestInit
+  ): Promise<Response> => {
     return this.authService.isAuthorized
       ? fetch(url, { ...params, headers: this.authService.authHeaders })
       : fetch(url, params);

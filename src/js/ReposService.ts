@@ -9,11 +9,11 @@ import { IErrorResponse } from "./interfaces/IErrorResponse";
 
 @injectable()
 export class ReposService {
-  private readonly REPOS_WRAPPER_CLASS_NAME = "repo_table__wrapper";
-  private readonly REPO_TAG_REGEX = /\brepo\b/;
-  private readonly DIV_TAG_NAME = "div";
-  private readonly USERNAME_CLASS_NAME = "repo__username";
-  private readonly CAN_NOT_FETCH_DATA =
+  private readonly REPOS_WRAPPER_CLASS_NAME: string = "repo_table__wrapper";
+  private readonly REPO_TAG_REGEX: RegExp = /\brepo\b/;
+  private readonly DIV_TAG_NAME: string = "div";
+  private readonly USERNAME_CLASS_NAME: string = "repo__username";
+  private readonly CAN_NOT_FETCH_DATA: string =
     "Some error occured while fetching the data from server.";
 
   constructor(
@@ -22,10 +22,10 @@ export class ReposService {
     @inject(ErrorService) private errorService: ErrorService
   ) {}
 
-  private getGHReposURL = (user: string) =>
+  private getGHReposURL = (user: string): string =>
     `https://api.github.com/users/${user}/repos?sort=updated`;
 
-  private get repoTagNodes() {
+  private get repoTagNodes(): HTMLCollectionOf<HTMLElement> {
     return document.getElementsByTagName("repo") as HTMLCollectionOf<
       HTMLElement
     >;
@@ -38,7 +38,9 @@ export class ReposService {
         method: "GET",
       }
     );
+
     const parsedUserRepos: IErrorResponse | IRepo[] = await userRepos.json();
+
     if (userRepos.status === 200) {
       return parsedUserRepos as IRepo[];
     } else {
@@ -79,13 +81,13 @@ export class ReposService {
     return { element, repos: filteredRepos };
   };
 
-  private get nodesWithRepos() {
+  private get nodesWithRepos(): Promise<IReposElement>[] {
     return Array.from(this.repoTagNodes).map(
       async (element) => await this.extendNodeWithRepos(element)
     );
   }
 
-  private replaceRepoWithDivTag = (element: Element) => {
+  private replaceRepoWithDivTag = (element: Element): void => {
     const elementInString: string = element.outerHTML;
     const elementWithReplacedTags = elementInString.replace(
       this.REPO_TAG_REGEX,
@@ -95,7 +97,7 @@ export class ReposService {
     element.outerHTML = elementWithReplacedTags;
   };
 
-  private addClassName = (element: Element) => {
+  private addWrapperClassName = (element: Element): void => {
     element.className = this.REPOS_WRAPPER_CLASS_NAME;
   };
 
@@ -107,7 +109,7 @@ export class ReposService {
     element.element.appendChild(h2Element);
   };
 
-  public renderTables = () => {
+  public renderTables = (): void => {
     this.nodesWithRepos.forEach(async (element: Promise<IReposElement>) => {
       const repoElement = await element;
 
@@ -115,7 +117,7 @@ export class ReposService {
       repoElement.element.appendChild(
         this.tableFactory.createTable(repoElement)
       );
-      this.addClassName(repoElement.element);
+      this.addWrapperClassName(repoElement.element);
       this.replaceRepoWithDivTag(repoElement.element);
     });
   };
